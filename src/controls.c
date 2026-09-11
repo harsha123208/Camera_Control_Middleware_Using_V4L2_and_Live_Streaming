@@ -67,9 +67,7 @@ void set_auto_exposure(int value)
         return;
     }
 
-    if (camera_set_control(
-            V4L2_CID_EXPOSURE_AUTO,
-            mode) == 0) {
+    if (camera_set_control(V4L2_CID_EXPOSURE_AUTO,mode) == 0) {
 
         printf("Auto Exposure: %s\n",
                value ? "ON" : "OFF");
@@ -81,9 +79,7 @@ void get_auto_exposure(void)
 {
     int value;
 
-    if (camera_get_control(
-            V4L2_CID_EXPOSURE_AUTO,
-            &value) == 0) {
+    if (camera_get_control(V4L2_CID_EXPOSURE_AUTO,&value) == 0) {
 
         if (value == V4L2_EXPOSURE_MANUAL)
             printf("Auto Exposure: OFF\n");
