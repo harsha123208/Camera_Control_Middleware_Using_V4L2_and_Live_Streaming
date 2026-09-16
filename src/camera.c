@@ -27,7 +27,6 @@ static int camera_fd = -1;
 static struct camera_buffer buffers[BUFFER_COUNT];
 static int buffer_count = 0;
 
-// Retry ioctl if it is interrupted by a signal.
 static int xioctl(unsigned long request, void *arg)
 {
     int ret;
