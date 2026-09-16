@@ -9,8 +9,8 @@
 #define CAMERA_DEVICE "/dev/video0"
 #define PC_IP   "192.168.0.86"
 #define PC_PORT 5000
-static volatile int running = 1;
-static volatile int streaming = 0;
+static  int running = 1;
+static  int streaming = 0;
 
 // Streaming thread
 void *stream_thread(void *arg)
