@@ -29,9 +29,8 @@ static int buffer_count = 0;
 
 static int xioctl(unsigned long request, void *arg)
 {
-    int ret;
-    ret = ioctl(camera_fd, request, arg);
-    return ret;
+    
+    return ioctl(camera_fd, request, arg);
 }
 
 // Open the camera device and initialize V4L2 buffers.
