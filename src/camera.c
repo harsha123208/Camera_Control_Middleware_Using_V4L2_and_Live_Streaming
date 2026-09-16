@@ -8,7 +8,8 @@
 #include <linux/videodev2.h>
 
 #include "camera.h"
-
+#define WIDTH 1920
+#define HEIGHT 1080
 // Structure used to store information about an MMAP buffer.
 // start stores the mapped user-space address.
 // length stores the size of the mapped buffer.
@@ -30,11 +31,7 @@ static int buffer_count = 0;
 static int xioctl(unsigned long request, void *arg)
 {
     int ret;
-
-    do {
-        ret = ioctl(camera_fd, request, arg);
-    } while (ret == -1 && errno == EINTR);
-
+    ret = ioctl(camera_fd, request, arg);
     return ret;
 }
 
@@ -87,8 +84,8 @@ int camera_open(const char *device)
     memset(&fmt, 0, sizeof(fmt));
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width = 1920;
-    fmt.fmt.pix.height = 1080;
+    fmt.fmt.pix.width = WIDTH;
+    fmt.fmt.pix.height = HEIGHT;
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
     fmt.fmt.pix.field = V4L2_FIELD_ANY;
 
