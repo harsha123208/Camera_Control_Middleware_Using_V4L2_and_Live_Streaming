@@ -27,11 +27,6 @@ static int camera_fd = -1;
 static struct camera_buffer buffers[BUFFER_COUNT];
 static int buffer_count = 0;
 
-static int xioctl(unsigned long request, void *arg)
-{
-    
-    return ioctl(camera_fd, request, arg);
-}
 
 // Open the camera device and initialize V4L2 buffers.
 int camera_open(const char *device)
@@ -53,7 +48,7 @@ int camera_open(const char *device)
     // Query the capabilities supported by the camera driver.
     memset(&cap, 0, sizeof(cap));
 
-    if (xioctl(VIDIOC_QUERYCAP, &cap) < 0)
+    if (ioctl((camera_fd,VIDIOC_QUERYCAP, &cap) < 0)
      {
         perror("VIDIOC_QUERYCAP");
         close(camera_fd);
@@ -88,7 +83,7 @@ int camera_open(const char *device)
     fmt.fmt.pix.field = V4L2_FIELD_ANY;
 
     // Apply the requested video format.
-    if (xioctl(VIDIOC_S_FMT, &fmt) < 0) 
+    if (ioctl((camera_fd,VIDIOC_S_FMT, &fmt) < 0) 
    {
         perror("VIDIOC_S_FMT");
         close(camera_fd);
@@ -104,7 +99,7 @@ int camera_open(const char *device)
     req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = V4L2_MEMORY_MMAP;
     // Allocate the requested number of capture buffers.
-    if (xioctl(VIDIOC_REQBUFS, &req) < 0)
+    if (ioctl((camera_fd,VIDIOC_REQBUFS, &req) < 0)
     {
         perror("VIDIOC_REQBUFS");
         close(camera_fd);
@@ -129,7 +124,7 @@ int camera_open(const char *device)
         buf.index = i;
 
         // Get the size and memory offset of the buffer.
-        if (xioctl(VIDIOC_QUERYBUF, &buf) < 0) 
+        if (ioctl((camera_fd,VIDIOC_QUERYBUF, &buf) < 0) 
         {
             perror("VIDIOC_QUERYBUF");
             return -1;
@@ -163,7 +158,7 @@ int camera_open(const char *device)
         buf.index = i;
 
         // Queue the buffer to the driver.
-        if (xioctl(VIDIOC_QBUF, &buf) < 0) 
+        if (ioctl((camera_fd,VIDIOC_QBUF, &buf) < 0) 
        {
             perror("VIDIOC_QBUF");
             return -1;
@@ -189,7 +184,7 @@ int camera_start(void)
     type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
     // Start the V4L2 capture stream.
-    if (xioctl(VIDIOC_STREAMON, &type) < 0) 
+    if (ioctl((camera_fd,VIDIOC_STREAMON, &type) < 0) 
     {
         perror("VIDIOC_STREAMON");
         return -1;
@@ -216,7 +211,7 @@ int camera_stop(void)
     type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
     // Stop the V4L2 capture stream.
-    if (xioctl(VIDIOC_STREAMOFF, &type) < 0) 
+    if (ioctl((camera_fd,VIDIOC_STREAMOFF, &type) < 0) 
    {
         perror("VIDIOC_STREAMOFF");
         return -1;
@@ -238,7 +233,7 @@ int camera_get_frame(struct v4l2_buffer *buf)
     buf->memory = V4L2_MEMORY_MMAP;
 
     // Get a filled buffer from the driver.
-    if (xioctl(VIDIOC_DQBUF, buf) < 0)
+    if (ioctl((camera_fd,VIDIOC_DQBUF, buf) < 0)
     {
 
         // No frame is available yet.
@@ -264,7 +259,7 @@ int camera_get_frame(struct v4l2_buffer *buf)
 int camera_release_frame(struct v4l2_buffer *buf)
 {
     // Return the buffer to the driver for reuse.
-    if (xioctl(VIDIOC_QBUF, buf) < 0)
+    if (ioctl((camera_fd,VIDIOC_QBUF, buf) < 0)
     {
 
         perror("VIDIOC_QBUF");
@@ -317,7 +312,7 @@ int camera_set_control(int id, int value)
     ctrl.value = value;
 
     // Send the new control value to the camera driver.
-    if (xioctl(VIDIOC_S_CTRL, &ctrl) < 0)
+    if (ioctl((camera_fd,VIDIOC_S_CTRL, &ctrl) < 0)
     {
 
         perror("VIDIOC_S_CTRL");
